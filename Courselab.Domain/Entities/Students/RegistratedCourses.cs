@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Courselab.Domain.Entities.Students
 {
-    public class RegistratedCourses
+    public class RegistratedCourse
     {
         public Guid Id { get; set; }
         [JsonIgnore]

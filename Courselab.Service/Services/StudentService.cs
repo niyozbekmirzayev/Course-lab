@@ -214,6 +214,50 @@ namespace Courselab.Service.Services
             return response;
         }
 
+        public async Task<BaseResponse<Student>> GetCourse(Guid studentId, Guid CourseId)
+        {
+            var response = new BaseResponse<Student>();
+
+            var exsistStudent = await unitOfWork.Students.GetAsync(
+                student => student.Login.Equals(studentId) &&
+                student.Status != ObjectStatus.Deleted
+                );
+
+            // checking if studnet does not exsist
+            if (exsistStudent == null)
+            {
+                response.Error = new BaseError(code: 404, message: "Student not found");
+
+                return response;
+            }
+
+            var exsistCourse = await unitOfWork.Courses.GetAsync(
+                course => course.Id.Equals(CourseId) &&
+                course.Status != ObjectStatus.Deleted
+                );
+
+            // checking if studnet does not exsist
+            if (exsistCourse == null)
+            {
+                response.Error = new BaseError(code: 404, message: "Course not found");
+
+                return response;
+            }
+
+            //mapping
+            var newCourse = new RegistratedCourse();
+            newCourse.Course = exsistCourse;
+
+            //registring for course
+            exsistStudent.RegistratedCourses.Add(newCourse);
+
+            await unitOfWork.SaveChangesAsync();
+            response.Data = exsistStudent;
+            response.Code = 200;
+
+            return response;
+        }
+
         //extension services
         public async Task<string> SaveFileAsync(Stream file, string fileName)
         {
@@ -229,11 +273,6 @@ namespace Courselab.Service.Services
             mainFile.Close();
 
             return fileName;
-        }
-
-        public Task<BaseResponse<Student>> BuyCourse(Guid CourseId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

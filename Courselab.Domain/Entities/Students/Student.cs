@@ -5,6 +5,6 @@ namespace Courselab.Domain.Entities.Students
 {
     public class Student : Person
     {
-        public virtual ICollection<RegistratedCourses> RegistratedCourses { get; set; }
+        public virtual ICollection<RegistratedCourse> RegistratedCourses { get; set; }
     }
 }
