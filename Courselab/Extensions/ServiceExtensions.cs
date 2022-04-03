@@ -13,6 +13,7 @@ namespace Courselab.API.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<IAuthorService, AuthorService>();
+            services.AddScoped<ICourseService, CourseService>();
         }
     }
 }

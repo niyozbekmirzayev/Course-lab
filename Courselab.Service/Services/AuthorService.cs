@@ -35,7 +35,7 @@ namespace Courselab.Service.Services
 
         public async Task<BaseResponse<Author>> CreateAsync(AuthorForCreationDto authorCreationDto)
         {
-            BaseResponse<Author> response = new BaseResponse<Author>();
+            var response = new BaseResponse<Author>();
 
             var exsistAuthorLogin = await unitOfWork.Authors.GetAsync(
                 Author => Author.Login.Equals(authorCreationDto.Login) &&
