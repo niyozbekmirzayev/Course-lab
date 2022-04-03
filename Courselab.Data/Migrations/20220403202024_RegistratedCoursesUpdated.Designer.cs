@@ -3,15 +3,17 @@ using System;
 using Courselab.Data.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Courselab.Data.Migrations
 {
     [DbContext(typeof(CourselabDbContext))]
-    partial class CourselabDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220403202024_RegistratedCoursesUpdated")]
+    partial class RegistratedCoursesUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,14 +141,9 @@ namespace Courselab.Data.Migrations
                     b.Property<DateTime>("StartedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid?>("StudentId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
-
-                    b.HasIndex("StudentId");
 
                     b.ToTable("RegistratedCourses");
                 });
@@ -193,10 +190,15 @@ namespace Courselab.Data.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("RegistratedCoursesId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RegistratedCoursesId");
 
                     b.ToTable("Students");
                 });
@@ -220,15 +222,15 @@ namespace Courselab.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Courselab.Domain.Entities.Students.Student", null)
-                        .WithMany("RegistratedCourses")
-                        .HasForeignKey("StudentId");
-
                     b.Navigation("Course");
                 });
 
             modelBuilder.Entity("Courselab.Domain.Entities.Students.Student", b =>
                 {
+                    b.HasOne("Courselab.Domain.Entities.Students.RegistratedCourses", "RegistratedCourses")
+                        .WithMany()
+                        .HasForeignKey("RegistratedCoursesId");
+
                     b.Navigation("RegistratedCourses");
                 });
 #pragma warning restore 612, 618

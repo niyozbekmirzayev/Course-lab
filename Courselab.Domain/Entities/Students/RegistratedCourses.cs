@@ -1,4 +1,5 @@
 ﻿using Courselab.Domain.Entities.Courses;
+using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,9 +8,7 @@ namespace Courselab.Domain.Entities.Students
     public class RegistratedCourses
     {
         public Guid Id { get; set; }
-        public Guid StudentId { get; set; }
-        [ForeignKey(nameof(StudentId))]
-        public Student Student { get; set; }
+        [JsonIgnore]
         public Guid CourseId { get; set; }
         [ForeignKey(nameof(CourseId))]
         public Course Course { get; set; }

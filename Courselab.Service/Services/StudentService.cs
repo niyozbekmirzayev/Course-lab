@@ -230,5 +230,10 @@ namespace Courselab.Service.Services
 
             return fileName;
         }
+
+        public Task<BaseResponse<Student>> BuyCourse(Guid CourseId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
