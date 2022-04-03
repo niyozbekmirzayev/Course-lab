@@ -41,6 +41,8 @@ namespace Courselab.API
             //using extension method to register all services
             services.AddCustomService();
 
+            services.AddControllers().AddNewtonsoftJson();
+
             //reginstring to use mapper
             services.AddAutoMapper(typeof(MappingConfigure));
 
