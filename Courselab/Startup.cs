@@ -1,6 +1,10 @@
 using Courselab.API.Extensions;
+using Courselab.Data.DbContexts;
+using Courselab.Service.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +26,12 @@ namespace Courselab.API
         {
 
             services.AddControllers();
+
+            //registring connection string
+            services.AddDbContext<CourselabDbContext>(
+               options => options.UseNpgsql(Configuration.GetConnectionString("CourselabConnectionString"))
+               );
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Courselab", Version = "v1" });
@@ -29,6 +39,8 @@ namespace Courselab.API
 
             //using extension method to register all services
             services.AddCustomService();
+
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,6 +51,11 @@ namespace Courselab.API
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Courselab v1"));
+            }
+
+            if (app.ApplicationServices.GetService<IHttpContextAccessor>() != null)
+            {
+                HttpContextHelper.Accessor = app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
             }
 
             app.UseHttpsRedirection();
