@@ -1,4 +1,5 @@
 ﻿using Courselab.Data.DbContexts;
+using Courselab.Data.IRepositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Courselab.Data.Respositories
 {
-    public class GenericRepository<T> : IRepositories.GenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly CourselabDbContext context;
         private readonly DbSet<T> dbSet;
