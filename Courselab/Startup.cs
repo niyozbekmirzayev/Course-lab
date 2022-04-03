@@ -1,6 +1,7 @@
 using Courselab.API.Extensions;
 using Courselab.Data.DbContexts;
 using Courselab.Service.Helpers;
+using Courselab.Service.Mapping;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +40,9 @@ namespace Courselab.API
 
             //using extension method to register all services
             services.AddCustomService();
+
+            //reginstring to use mapper
+            services.AddAutoMapper(typeof(MappingConfigure));
 
             services.AddHttpContextAccessor();
         }
