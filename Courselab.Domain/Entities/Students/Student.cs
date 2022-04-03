@@ -1,5 +1,4 @@
 ﻿using Courselab.Domain.Commons;
-using System.Collections.Generic;
 
 namespace Courselab.Domain.Entities.Students
 {
