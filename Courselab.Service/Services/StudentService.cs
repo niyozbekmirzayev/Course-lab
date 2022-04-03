@@ -100,24 +100,118 @@ namespace Courselab.Service.Services
             return response;
         }
 
-        public Task<BaseResponse<bool>> DeleteAsync(Guid id)
+        public async Task<BaseResponse<bool>> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<bool>();
+
+            var student = await unitOfWork.Students.GetAsync(student => student.Id.Equals(id) &&
+                                                       student.Status != ObjectStatus.Deleted);
+
+            //checking if student to delete does not exsist
+            if (student == null)
+            {
+                response.Error = new BaseError(code: 404, message: "student to delete not found");
+
+                return response;
+            }
+
+            student.Delete();
+            await unitOfWork.SaveChangesAsync();
+
+            response.Code = 200;
+            response.Data = true;
+
+            return response;
         }
 
         public BaseResponse<IEnumerable<Student>> GetAll(PaginationParams @params)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<IEnumerable<Student>>();
+
+            var students = unitOfWork.Students.GetAll();
+            var paginatedStudents = students.ToPagesList(@params);
+
+            //setting image
+            foreach (var student in paginatedStudents)
+                if (student.Image != null)
+                    student.Image = HttpContextHelper.Context.Request.Scheme + "://" +
+                                            HttpContextHelper.Context.Request.Host.Value + "/Images/" +
+                                            student.Image;
+
+            response.Data = paginatedStudents;
+            response.Code = 200;
+
+            return response;
         }
 
-        public Task<BaseResponse<Student>> GetByIdAsync(Guid id)
+        public async Task<BaseResponse<Student>> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<Student>();
+            var student = await unitOfWork.Students.GetAsync(student => student.Id == id &&
+            student.Status != ObjectStatus.Deleted);
+
+            //checking if student does not exsist
+            if (student == null)
+            {
+                response.Error = new BaseError(code: 404, message: "student not found");
+
+                return response;
+            }
+
+            //providing return data
+            if (student.Image != null)
+                student.Image = HttpContextHelper.Context.Request.Scheme + "://" +
+                                        HttpContextHelper.Context.Request.Host.Value + "/Images/" +
+                                        student.Image;
+
+            response.Data = student;
+            response.Code = 200;
+
+            return response;
         }
 
-        public Task<BaseResponse<Student>> UpdateAsync(StudentForUpdateDto studentToUpdate)
+        public async Task<BaseResponse<Student>> UpdateAsync(StudentForUpdateDto studentToUpdate)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<Student>();
+
+            var student = await unitOfWork.Students.GetAsync(student => student.Id.Equals(studentToUpdate.Id) &&
+                                                       student.Status != ObjectStatus.Deleted);
+
+            //checking if student to update does not exsist
+            if (student == null)
+            {
+                response.Error = new BaseError(code: 404, message: "student not found");
+
+                return response;
+            }
+
+            //mapping
+            student.FirstName = studentToUpdate.FirstName;
+            student.LastName = studentToUpdate.LastName;
+            student.Gender = studentToUpdate.Gender;
+            student.BrithDate = studentToUpdate.BrithDate;
+            student.PhoneNumber = studentToUpdate.PhoneNumber;
+            student.Email = studentToUpdate.Email;
+            student.Login = studentToUpdate.Login;
+            student.Password = studentToUpdate.Password.EncodeInSha256();
+
+            //saving image of photo if user uploaded
+            if (studentToUpdate.Image != null)
+                student.Image = await SaveFileAsync(studentToUpdate.Image.OpenReadStream(), studentToUpdate.Image.FileName);
+
+            student.Modify();
+            await unitOfWork.SaveChangesAsync();
+
+            //providing return content
+            if (student.Image != null)
+                student.Image = HttpContextHelper.Context.Request.Scheme + "://" +
+                                        HttpContextHelper.Context.Request.Host.Value + "/Images/" +
+                                        student.Image;
+
+            response.Data = student;
+            response.Code = 200;
+
+            return response;
         }
 
         //extension services
