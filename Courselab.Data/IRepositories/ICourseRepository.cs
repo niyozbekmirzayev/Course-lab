@@ -2,7 +2,7 @@
 
 namespace Courselab.Data.IRepositories
 {
-    public interface ICourseRepository : GenericRepository<Course>
+    public interface ICourseRepository : IGenericRepository<Course>
     {
     }
 }
