@@ -1,3 +1,4 @@
+using Courselab.API.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,12 +26,15 @@ namespace Courselab.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Courselab", Version = "v1" });
             });
+
+            //using extension method to register all services
+            services.AddCustomService();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsProduction())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
@@ -40,6 +44,8 @@ namespace Courselab.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 
