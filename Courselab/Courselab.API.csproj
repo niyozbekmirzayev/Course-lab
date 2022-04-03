@@ -12,4 +12,10 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Courselab.Data\Courselab.Data.csproj" />
+    <ProjectReference Include="..\Courselab.Domain\Courselab.Domain.csproj" />
+    <ProjectReference Include="..\Courselab.Service\Courselab.Service.csproj" />
+  </ItemGroup>
+
 </Project>
