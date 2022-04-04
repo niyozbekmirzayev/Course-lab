@@ -8,5 +8,6 @@ namespace Courselab.Service.DTOs.Authors
     {
         [Required]
         public Guid Id { get; set; }
+        public string About { get; set; }
     }
 }

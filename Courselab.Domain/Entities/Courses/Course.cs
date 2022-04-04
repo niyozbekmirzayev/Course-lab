@@ -17,6 +17,6 @@ namespace Courselab.Domain.Entities.Courses
         [JsonIgnore]
         public Guid AuthorId { get; set; }
         [ForeignKey(nameof(AuthorId))]
-        public Author Author { get; set; }
+        public virtual Author Author { get; set; }
     }
 }

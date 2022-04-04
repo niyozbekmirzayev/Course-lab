@@ -8,6 +8,7 @@ using Courselab.Service.Extensions;
 using Courselab.Service.Interfaces;
 using EduCenterWebAPI.Data.IRepositories;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -99,7 +100,7 @@ namespace Courselab.Service.Services
         {
             var response = new BaseResponse<IEnumerable<Course>>();
 
-            var courses = unitOfWork.Courses.GetAll();
+            var courses = unitOfWork.Courses.GetAll().Include("Author");
             var paginatedCourses = courses.ToPagesList(@params);
 
             response.Data = paginatedCourses;
