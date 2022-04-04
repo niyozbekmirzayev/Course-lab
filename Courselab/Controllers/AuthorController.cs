@@ -12,11 +12,11 @@ namespace Courselab.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthorController : Controller
+    public class AuthorsController : Controller
     {
         private IAuthorService authorService;
 
-        public AuthorController(IAuthorService authorService)
+        public AuthorsController(IAuthorService authorService)
         {
             this.authorService = authorService;
         }
