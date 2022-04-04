@@ -215,7 +215,7 @@ namespace Courselab.Service.Services
             return response;
         }
 
-        public async Task<BaseResponse<Student>> GetCourse(Guid studentId, Guid CourseId)
+        public async Task<BaseResponse<Student>> BuyCourseAsync(Guid studentId, Guid CourseId)
         {
             var response = new BaseResponse<Student>();
 
@@ -237,7 +237,7 @@ namespace Courselab.Service.Services
                 course.Status != ObjectStatus.Deleted
                 );
 
-            // checking if studnet does not exsist
+            // checking if course does not exsist
             if (exsistCourse == null)
             {
                 response.Error = new BaseError(code: 404, message: "Course not found");

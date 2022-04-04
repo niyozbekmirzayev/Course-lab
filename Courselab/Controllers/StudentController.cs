@@ -61,5 +61,14 @@ namespace Courselab.API.Controllers
             return StatusCode(result.Code ?? result.Error.Code.Value, result);
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<ActionResult<BaseResponse<Student>>> BuyCourse(Guid studentId, Guid courseId)
+        {
+            var result = await studentService.BuyCourseAsync(studentId, courseId);
+
+            return StatusCode(result.Code ?? result.Error.Code.Value, result);
+        }
+
     }
 }
