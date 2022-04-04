@@ -220,7 +220,7 @@ namespace Courselab.Service.Services
             var response = new BaseResponse<Student>();
 
             var exsistStudent = await unitOfWork.Students.GetAsync(
-                student => student.Login.Equals(studentId) &&
+                student => student.Id.Equals(studentId) &&
                 student.Status != ObjectStatus.Deleted
                 );
 
@@ -246,7 +246,8 @@ namespace Courselab.Service.Services
             }
 
             //mapping
-            var newCourse = new RegistratedCourse();
+            var newId = new Guid();
+            var newCourse = new RegistratedCourse(newId);
             newCourse.Course = exsistCourse;
 
             //registring for course
