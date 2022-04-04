@@ -42,7 +42,7 @@ namespace Courselab.API.Controllers
             return StatusCode(result.Code ?? result.Error.Code.Value, result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<BaseResponse<Author>>> Delete(Guid id)
         {
             var result = await authorService.DeleteAsync(id);

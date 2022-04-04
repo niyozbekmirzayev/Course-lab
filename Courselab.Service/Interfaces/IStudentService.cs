@@ -16,6 +16,7 @@ namespace Courselab.Service.Interfaces
         Task<BaseResponse<Student>> GetByIdAsync(Guid id);
         BaseResponse<IEnumerable<Student>> GetAll(PaginationParams @params);
         Task<BaseResponse<Student>> UpdateAsync(StudentForUpdateDto studentToUpdate);
+        Task<BaseResponse<Student>> BuyCourseAsync(Guid studentId, Guid CourseId);
         Task<string> SaveFileAsync(Stream file, string fileName);
         void RefitImage(Student student);
     }

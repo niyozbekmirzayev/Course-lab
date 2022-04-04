@@ -42,7 +42,7 @@ namespace Courselab.API.Controllers
             return StatusCode(result.Code ?? result.Error.Code.Value, result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<BaseResponse<Student>>> Delete(Guid id)
         {
             var result = await studentService.DeleteAsync(id);
@@ -54,6 +54,14 @@ namespace Courselab.API.Controllers
         public async Task<ActionResult<BaseResponse<Student>>> Update([FromForm] StudentForUpdateDto studentForUpdate)
         {
             var result = await studentService.UpdateAsync(studentForUpdate);
+
+            return StatusCode(result.Code ?? result.Error.Code.Value, result);
+        }
+
+        [HttpPut("[action]/{studentId}&{courseId}")]
+        public async Task<ActionResult<BaseResponse<Student>>>RegisterCourse(Guid studentId, Guid courseId)
+        {
+            var result = await studentService.BuyCourseAsync(studentId, courseId);
 
             return StatusCode(result.Code ?? result.Error.Code.Value, result);
         }

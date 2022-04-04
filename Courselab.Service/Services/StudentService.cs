@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Courselab.Domain.Commons;
 using Courselab.Domain.Configurations;
+using Courselab.Domain.Entities.Registraions;
 using Courselab.Domain.Entities.Students;
 using Courselab.Domain.Enums;
 using Courselab.Service.DTOs.Students;
@@ -204,6 +205,51 @@ namespace Courselab.Service.Services
                 RefitImage(student);
 
             response.Data = student;
+            response.Code = 200;
+
+            return response;
+        }
+
+        public async Task<BaseResponse<Student>> BuyCourseAsync(Guid studentId, Guid CourseId)
+        {
+            var response = new BaseResponse<Student>();
+
+            var exsistStudent = await unitOfWork.Students.GetAsync(
+                student => student.Id.Equals(studentId) &&
+                student.Status != ObjectStatus.Deleted
+                );
+
+            // checking if studnet does not exsist
+            if (exsistStudent == null)
+            {
+                response.Error = new BaseError(code: 404, message: "Student not found");
+
+                return response;
+            }
+
+            var exsistCourse = await unitOfWork.Courses.GetAsync(
+                course => course.Id.Equals(CourseId) &&
+                course.Status != ObjectStatus.Deleted
+                );
+
+            // checking if course does not exsist
+            if (exsistCourse == null)
+            {
+                response.Error = new BaseError(code: 404, message: "Course not found");
+
+                return response;
+            }
+
+            var newRegistration = new Registration();
+            newRegistration.Start(exsistCourse);
+
+            var createdRegistration = await unitOfWork.Registrations.InsertAsync(newRegistration);
+
+            //registring for course
+            exsistStudent.Registrations.Add(createdRegistration);
+
+            await unitOfWork.SaveChangesAsync();
+            response.Data = exsistStudent;
             response.Code = 200;
 
             return response;

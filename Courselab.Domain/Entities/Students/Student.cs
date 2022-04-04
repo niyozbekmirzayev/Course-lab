@@ -6,6 +6,11 @@ namespace Courselab.Domain.Entities.Students
 {
     public class Student : Person
     {
+        public Student()
+        {
+            Registrations = new List<Registration>();
+        }
+
         public virtual ICollection<Registration> Registrations { get; set; }
     }
 }
