@@ -192,6 +192,8 @@ namespace Courselab.Service.Services
             if (authorToUpdate.Image != null)
                 author.Image = await SaveFileAsync(authorToUpdate.Image.OpenReadStream(), authorToUpdate.Image.FileName);
 
+            else author.Image = null;
+
             author.Modify();
             await unitOfWork.SaveChangesAsync();
 

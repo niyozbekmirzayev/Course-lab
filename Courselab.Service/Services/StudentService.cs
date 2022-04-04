@@ -197,6 +197,8 @@ namespace Courselab.Service.Services
             if (studentToUpdate.Image != null)
                 student.Image = await SaveFileAsync(studentToUpdate.Image.OpenReadStream(), studentToUpdate.Image.FileName);
 
+            else student.Image = null;
+
             //updating database
             student.Modify();
             await unitOfWork.SaveChangesAsync();
