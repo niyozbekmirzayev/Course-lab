@@ -7,10 +7,6 @@ namespace Courselab.Domain.Entities.Students
 {
     public class RegistratedCourse
     {
-        public RegistratedCourse(Guid Id)
-        {
-            this.Id = Id;
-        }
         public Guid Id { get; set; }
         [JsonIgnore]
         public Guid CourseId { get; set; }
