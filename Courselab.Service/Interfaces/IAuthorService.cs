@@ -17,5 +17,6 @@ namespace Courselab.Service.Interfaces
         BaseResponse<IEnumerable<Author>> GetAll(PaginationParams @params);
         Task<BaseResponse<Author>> UpdateAsync(AuthorForUpdateDto authorToUpdate);
         Task<string> SaveFileAsync(Stream file, string fileName);
+        void RefitImage(Author author);
     }
 }

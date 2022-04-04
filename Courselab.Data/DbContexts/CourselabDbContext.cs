@@ -1,5 +1,6 @@
 ﻿using Courselab.Domain.Entities.Authors;
 using Courselab.Domain.Entities.Courses;
+using Courselab.Domain.Entities.Registraions;
 using Courselab.Domain.Entities.Students;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ namespace Courselab.Data.DbContexts
         DbSet<Author> Authors { get; set; }
         DbSet<Student> Students { get; set; }
         DbSet<Course> Courses { get; set; }
+        DbSet<Registration> Registrations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

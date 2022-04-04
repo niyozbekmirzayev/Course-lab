@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Courselab.Domain.Entities.Students
+namespace Courselab.Domain.Entities.Registraions
 {
-    public class RegistratedCourse
+    public class Registration
     {
         public Guid Id { get; set; }
         [JsonIgnore]

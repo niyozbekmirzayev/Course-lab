@@ -17,12 +17,15 @@ namespace EduCenterWebAPI.Data.Respositories
 
         public IAuthorRepository Authors { get; private set; }
 
+        public IRegistrationRepository Registrations { get; private set; }
+
         public UnitOfWork(CourselabDbContext context)
         {
             this.context = context;
             Courses = new CourseRepository(context);
             Students = new StudentRepository(context);
             Authors = new AuthorRepository(context);
+            Registrations = new RegistrationRepository(context);
         }
 
         public void Dispose()

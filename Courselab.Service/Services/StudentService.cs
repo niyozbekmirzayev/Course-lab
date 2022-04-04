@@ -46,7 +46,7 @@ namespace Courselab.Service.Services
             // checking if login is not unique
             if (exsistStudentLogin != null)
             {
-                response.Error = new BaseError(code: 409, message: "Login of student already exsists");
+                response.Error = new BaseError(code: 409, message: "Login already exsists");
 
                 return response;
             }
@@ -59,7 +59,7 @@ namespace Courselab.Service.Services
             // checking if phone number exsists
             if (exsistStudentPhoneNumber != null)
             {
-                response.Error = new BaseError(code: 409, message: "Phone number of student already exsists");
+                response.Error = new BaseError(code: 409, message: "Phone number already exsists");
 
                 return response;
             }
@@ -72,7 +72,7 @@ namespace Courselab.Service.Services
             // checking if email exsists
             if (exsistStudentEmail != null)
             {
-                response.Error = new BaseError(code: 409, message: "Email of student already exsists");
+                response.Error = new BaseError(code: 409, message: "Email already exsists");
 
                 return response;
             }
@@ -84,12 +84,12 @@ namespace Courselab.Service.Services
             if (studentCreationDto.Image != null)
                 newStudent.Image = await SaveFileAsync(studentCreationDto.Image.OpenReadStream(), studentCreationDto.Image.FileName);
 
-            //inserting data
+            //updating database
             newStudent.Create();
             var createdNewStudent = await unitOfWork.Students.InsertAsync(newStudent);
             await unitOfWork.SaveChangesAsync();
 
-            //providing return content
+            //checking if student has image
             if (studentCreationDto.Image != null)
                 createdNewStudent.Image = HttpContextHelper.Context.Request.Scheme + "://" +
                                         HttpContextHelper.Context.Request.Host.Value + "/Images/" +
@@ -111,11 +111,12 @@ namespace Courselab.Service.Services
             //checking if student to delete does not exsist
             if (student == null)
             {
-                response.Error = new BaseError(code: 404, message: "student to delete not found");
+                response.Error = new BaseError(code: 404, message: "Student not found");
 
                 return response;
             }
 
+            //updating database
             student.Delete();
             await unitOfWork.SaveChangesAsync();
 
@@ -129,15 +130,13 @@ namespace Courselab.Service.Services
         {
             var response = new BaseResponse<IEnumerable<Student>>();
 
-            var students = unitOfWork.Students.GetAll().Include("RegistratedCourses");
+            var students = unitOfWork.Students.GetAll().Include("Registrations");
             var paginatedStudents = students.ToPagesList(@params);
 
             //setting image
             foreach (var student in paginatedStudents)
                 if (student.Image != null)
-                    student.Image = HttpContextHelper.Context.Request.Scheme + "://" +
-                                            HttpContextHelper.Context.Request.Host.Value + "/Images/" +
-                                            student.Image;
+                    RefitImage(student);
 
             response.Data = paginatedStudents;
             response.Code = 200;
@@ -154,16 +153,13 @@ namespace Courselab.Service.Services
             //checking if student does not exsist
             if (student == null)
             {
-                response.Error = new BaseError(code: 404, message: "student not found");
+                response.Error = new BaseError(code: 404, message: "Student not found");
 
                 return response;
             }
 
-            //providing return data
             if (student.Image != null)
-                student.Image = HttpContextHelper.Context.Request.Scheme + "://" +
-                                        HttpContextHelper.Context.Request.Host.Value + "/Images/" +
-                                        student.Image;
+                RefitImage(student);
 
             response.Data = student;
             response.Code = 200;
@@ -181,7 +177,7 @@ namespace Courselab.Service.Services
             //checking if student to update does not exsist
             if (student == null)
             {
-                response.Error = new BaseError(code: 404, message: "student not found");
+                response.Error = new BaseError(code: 404, message: "Student not found");
 
                 return response;
             }
@@ -196,18 +192,16 @@ namespace Courselab.Service.Services
             student.Login = studentToUpdate.Login;
             student.Password = studentToUpdate.Password.EncodeInSha256();
 
-            //saving image of photo if user uploaded
+            //checking if image uploaded
             if (studentToUpdate.Image != null)
                 student.Image = await SaveFileAsync(studentToUpdate.Image.OpenReadStream(), studentToUpdate.Image.FileName);
 
+            //updating database
             student.Modify();
             await unitOfWork.SaveChangesAsync();
 
-            //providing return content
             if (student.Image != null)
-                student.Image = HttpContextHelper.Context.Request.Scheme + "://" +
-                                        HttpContextHelper.Context.Request.Host.Value + "/Images/" +
-                                        student.Image;
+                RefitImage(student);
 
             response.Data = student;
             response.Code = 200;
@@ -215,7 +209,6 @@ namespace Courselab.Service.Services
             return response;
         }
 
-      
 
         //extension services
         public async Task<string> SaveFileAsync(Stream file, string fileName)
@@ -224,7 +217,6 @@ namespace Courselab.Service.Services
             fileName = Guid.NewGuid().ToString("N") + "_" + fileName;
             string storagePath = config.GetSection("Storage:ImagesUrl").Value;
             string filePath = Path.Combine(env.WebRootPath, $"{storagePath}/{fileName}");
-            Console.WriteLine(filePath);
 
             //creating stream with given path to copy file from input 
             FileStream mainFile = File.Create(filePath);
@@ -233,5 +225,13 @@ namespace Courselab.Service.Services
 
             return fileName;
         }
+
+        public void RefitImage(Student student) 
+        {
+            student.Image = HttpContextHelper.Context.Request.Scheme + "://" +
+                                        HttpContextHelper.Context.Request.Host.Value + "/Images/" +
+                                        student.Image;
+        }
+
     }
 }

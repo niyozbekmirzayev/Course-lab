@@ -45,7 +45,7 @@ namespace Courselab.Service.Services
             // checking if login is not unique
             if (exsistAuthorLogin != null)
             {
-                response.Error = new BaseError(code: 409, message: "Login of author already exsists");
+                response.Error = new BaseError(code: 409, message: "Login already exsists");
 
                 return response;
             }
@@ -58,7 +58,7 @@ namespace Courselab.Service.Services
             // checking if phone number exsists
             if (exsistAuthorPhoneNumber != null)
             {
-                response.Error = new BaseError(code: 409, message: "Phone number of author already exsists");
+                response.Error = new BaseError(code: 409, message: "Phone number already exsists");
 
                 return response;
             }
@@ -71,7 +71,7 @@ namespace Courselab.Service.Services
             // checking if email exsists
             if (exsistAuthorEmail != null)
             {
-                response.Error = new BaseError(code: 409, message: "Email of author already exsists");
+                response.Error = new BaseError(code: 409, message: "Email already exsists");
 
                 return response;
             }
@@ -83,16 +83,13 @@ namespace Courselab.Service.Services
             if (authorCreationDto.Image != null)
                 newAuthor.Image = await SaveFileAsync(authorCreationDto.Image.OpenReadStream(), authorCreationDto.Image.FileName);
 
-            //inserting data
+            //updating database
             newAuthor.Create();
             var createdNewAuthor = await unitOfWork.Authors.InsertAsync(newAuthor);
             await unitOfWork.SaveChangesAsync();
 
-            //providing return content
-            if (authorCreationDto.Image != null)
-                createdNewAuthor.Image = HttpContextHelper.Context.Request.Scheme + "://" +
-                                        HttpContextHelper.Context.Request.Host.Value + "/Images/" +
-                                        createdNewAuthor.Image;
+            if (createdNewAuthor.Image != null)
+                RefitImage(createdNewAuthor);
 
             response.Data = createdNewAuthor;
             response.Code = 200;
@@ -110,7 +107,7 @@ namespace Courselab.Service.Services
             //checking if author to delete does not exsist
             if (author == null)
             {
-                response.Error = new BaseError(code: 404, message: "Author to delete not found");
+                response.Error = new BaseError(code: 404, message: "Author not found");
 
                 return response;
             }
@@ -134,9 +131,7 @@ namespace Courselab.Service.Services
             //setting image
             foreach (var author in paginatedAuthors)
                 if (author.Image != null)
-                    author.Image = HttpContextHelper.Context.Request.Scheme + "://" +
-                                            HttpContextHelper.Context.Request.Host.Value + "/Images/" +
-                                            author.Image;
+                    RefitImage(author);
 
             response.Data = paginatedAuthors;
             response.Code = 200;
@@ -147,10 +142,11 @@ namespace Courselab.Service.Services
         public async Task<BaseResponse<Author>> GetByIdAsync(Guid id)
         {
             var response = new BaseResponse<Author>();
+            
             var author = await unitOfWork.Authors.GetAsync(author => author.Id == id &&
             author.Status != ObjectStatus.Deleted);
 
-            //checking if Author does not exsist
+            //checking if author does not exsist
             if (author == null)
             {
                 response.Error = new BaseError(code: 404, message: "Author not found");
@@ -158,11 +154,8 @@ namespace Courselab.Service.Services
                 return response;
             }
 
-            //providing return data
             if (author.Image != null)
-                author.Image = HttpContextHelper.Context.Request.Scheme + "://" +
-                                        HttpContextHelper.Context.Request.Host.Value + "/Images/" +
-                                        author.Image;
+                RefitImage(author);
 
             response.Data = author;
             response.Code = 200;
@@ -195,24 +188,22 @@ namespace Courselab.Service.Services
             author.Login = authorToUpdate.Login;
             author.Password = authorToUpdate.Password.EncodeInSha256();
 
-            //saving image of photo if user uploaded
+            //checking if image uploaded
             if (authorToUpdate.Image != null)
                 author.Image = await SaveFileAsync(authorToUpdate.Image.OpenReadStream(), authorToUpdate.Image.FileName);
 
             author.Modify();
             await unitOfWork.SaveChangesAsync();
 
-            //providing return content
             if (author.Image != null)
-                author.Image = HttpContextHelper.Context.Request.Scheme + "://" +
-                                        HttpContextHelper.Context.Request.Host.Value + "/Images/" +
-                                        author.Image;
+                RefitImage(author);
 
             response.Data = author;
             response.Code = 200;
 
             return response;
         }
+
 
         //extension services
         public async Task<string> SaveFileAsync(Stream file, string fileName)
@@ -221,7 +212,6 @@ namespace Courselab.Service.Services
             fileName = Guid.NewGuid().ToString("N") + "_" + fileName;
             string storagePath = config.GetSection("Storage:ImagesUrl").Value;
             string filePath = Path.Combine(env.WebRootPath, $"{storagePath}/{fileName}");
-            Console.WriteLine(filePath);
 
             //creating stream with given path to copy file from input 
             FileStream mainFile = File.Create(filePath);
@@ -229,6 +219,13 @@ namespace Courselab.Service.Services
             mainFile.Close();
 
             return fileName;
+        }
+
+        public void RefitImage(Author author)
+        {
+            author.Image = HttpContextHelper.Context.Request.Scheme + "://" +
+                                        HttpContextHelper.Context.Request.Host.Value + "/Images/" +
+                                        author.Image;
         }
 
     }

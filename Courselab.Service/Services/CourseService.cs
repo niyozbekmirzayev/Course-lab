@@ -46,16 +46,16 @@ namespace Courselab.Service.Services
                 return response;
             }
 
-            var exsistCourse = await unitOfWork.Courses.GetAsync(
+            Course exsistCourse = await unitOfWork.Courses.GetAsync(
                 course => course.Name.Equals(courseCreationDto.Name) &&
                 course.Status != ObjectStatus.Deleted &&
                 course.AuthorId.Equals(courseCreationDto.AuthorId)
                 );
 
-            // checking if course unique for author
+            // checking if course is not unique for author
             if (exsistCourse != null)
             {
-                response.Error = new BaseError(code: 409, message: "Author already has this course");
+                response.Error = new BaseError(code: 409, message: "Author already has the course");
 
                 return response;
             }
@@ -63,7 +63,7 @@ namespace Courselab.Service.Services
             //mapping
             Course newCourse = mapper.Map<Course>(courseCreationDto);
 
-            //inserting data
+            //updating database
             newCourse.Create();
             var createdNewcourse = await unitOfWork.Courses.InsertAsync(newCourse);
             await unitOfWork.SaveChangesAsync();
@@ -73,21 +73,23 @@ namespace Courselab.Service.Services
 
             return response;
         }
+        
         public async Task<BaseResponse<bool>> DeleteAsync(Guid id)
         {
             var response = new BaseResponse<bool>();
 
-            var course = await unitOfWork.Courses.GetAsync(course => course.Id.Equals(id) &&
+            Course course = await unitOfWork.Courses.GetAsync(course => course.Id.Equals(id) &&
                                                        course.Status != ObjectStatus.Deleted);
 
             //checking if author to delete does not exsist
             if (course == null)
             {
-                response.Error = new BaseError(code: 404, message: "Course to delete not found");
+                response.Error = new BaseError(code: 404, message: "Course not found");
 
                 return response;
             }
 
+            //updating database
             course.Delete();
             await unitOfWork.SaveChangesAsync();
 
@@ -96,6 +98,7 @@ namespace Courselab.Service.Services
 
             return response;
         }
+        
         public BaseResponse<IEnumerable<Course>> GetAll(PaginationParams @params)
         {
             var response = new BaseResponse<IEnumerable<Course>>();
@@ -108,10 +111,12 @@ namespace Courselab.Service.Services
 
             return response;
         }
+        
         public async Task<BaseResponse<Course>> GetByIdAsync(Guid id)
         {
             var response = new BaseResponse<Course>();
-            var course = await unitOfWork.Courses.GetAsync(course => course.Id == id &&
+            
+            Course course = await unitOfWork.Courses.GetAsync(course => course.Id == id &&
             course.Status != ObjectStatus.Deleted);
 
             //checking if course does not exsist
@@ -127,7 +132,7 @@ namespace Courselab.Service.Services
 
             return response;
         }
-
+        
         public async Task<BaseResponse<Course>> UpdateAsync(CourseForUpdateDto courseToUpdate)
         {
             var response = new BaseResponse<Course>();
@@ -148,7 +153,7 @@ namespace Courselab.Service.Services
                 author.Status != ObjectStatus.Deleted
                 );
 
-            //checking if author exsists
+            //checking if author does not exsist
             if (exsitAuthor == null)
             {
                 response.Error = new BaseError(code: 404, message: "Author not found");
@@ -164,7 +169,7 @@ namespace Courselab.Service.Services
             exsistCourse.Type = courseToUpdate.Type;
             exsistCourse.AuthorId = courseToUpdate.AuthorId;
 
-            //saving data
+            //updating database
             exsistCourse.Modify();
             await unitOfWork.SaveChangesAsync();
 
