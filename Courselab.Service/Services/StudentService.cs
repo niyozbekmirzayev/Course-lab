@@ -9,6 +9,7 @@ using Courselab.Service.Helpers;
 using Courselab.Service.Interfaces;
 using EduCenterWebAPI.Data.IRepositories;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -128,7 +129,7 @@ namespace Courselab.Service.Services
         {
             var response = new BaseResponse<IEnumerable<Student>>();
 
-            var students = unitOfWork.Students.GetAll();
+            var students = unitOfWork.Students.GetAll().Include("RegistratedCourses");
             var paginatedStudents = students.ToPagesList(@params);
 
             //setting image

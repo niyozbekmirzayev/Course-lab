@@ -11,7 +11,7 @@ namespace Courselab.Domain.Entities.Students
         [JsonIgnore]
         public Guid CourseId { get; set; }
         [ForeignKey(nameof(CourseId))]
-        public Course Course { get; set; }
+        public virtual Course Course { get; set; }
         public DateTime StartedDate { get; set; } = DateTime.Now;
         public bool IsFinished { get; set; } = false;
         public DateTime? FinishedDate { get; set; } = null;
