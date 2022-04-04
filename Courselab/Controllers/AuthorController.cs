@@ -16,10 +16,7 @@ namespace Courselab.API.Controllers
     {
         private IAuthorService authorService;
 
-        public AuthorsController(IAuthorService authorService)
-        {
-            this.authorService = authorService;
-        }
+        public AuthorsController(IAuthorService authorService) => this.authorService = authorService;
 
         [HttpPost]
         public async Task<ActionResult<BaseResponse<Author>>> Create([FromForm] AuthorForCreationDto authorCreationalDTO)

@@ -7,7 +7,6 @@ namespace Courselab.Domain.Entities.Authors
     public class Author : Person
     {
         public string About { get; set; }
-
         public virtual ICollection<Course> Courses { get; set; }
     }
 }

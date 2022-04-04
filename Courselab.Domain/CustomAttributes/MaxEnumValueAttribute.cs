@@ -29,14 +29,11 @@ namespace Courselab.Domain.CustomAttributes
                     if (stateValue >= minValue)
                         return ValidationResult.Success;
 
-                    else
-                        return new ValidationResult("You can't enter a value less than " + minValue);
-                else
-                    return new ValidationResult("You can't enter a value greater than " + maxValue);
+                    else return new ValidationResult("You can't enter a value less than " + minValue);
+                else return new ValidationResult("You can't enter a value greater than " + maxValue);
             }
 
-            else
-                return ValidationResult.Success;
+            else return ValidationResult.Success;
         }
     }
 }

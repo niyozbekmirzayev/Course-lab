@@ -16,10 +16,7 @@ namespace Courselab.API.Controllers
     {
         private IStudentService studentService;
 
-        public StudentsController(IStudentService studentService)
-        {
-            this.studentService = studentService;
-        }
+        public StudentsController(IStudentService studentService) => this.studentService = studentService;
 
         [HttpPost]
         public async Task<ActionResult<BaseResponse<Student>>> Create([FromForm] StudentForCreationDto studentCreationalDTO)
