@@ -4,11 +4,13 @@ using Courselab.Domain.Configurations;
 using Courselab.Domain.Entities.Authors;
 using Courselab.Domain.Enums;
 using Courselab.Service.DTOs.Authors;
+using Courselab.Service.DTOs.Commons;
 using Courselab.Service.Extensions;
 using Courselab.Service.Helpers;
 using Courselab.Service.Interfaces;
 using EduCenterWebAPI.Data.IRepositories;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -206,8 +208,38 @@ namespace Courselab.Service.Services
             return response;
         }
 
+        public async Task<BaseResponse<Author>> SetImageAsync(SetImageDto setImageDto)
+        {
+            var response = new BaseResponse<Author>();
 
-        //extension services
+            var author = await unitOfWork.Authors.GetAsync(student => student.Id.Equals(setImageDto.Id) &&
+                                                       student.Status != ObjectStatus.Deleted);
+
+            //checking if author to update does not exsist
+            if (author == null)
+            {
+                response.Error = new BaseError(code: 404, message: "Author not found");
+
+                return response;
+            }
+
+            author.Image = await SaveFileAsync(setImageDto.Image.OpenReadStream(), setImageDto.Image.FileName);
+
+            author.Modify();
+
+            //updating database
+            await unitOfWork.SaveChangesAsync();
+
+            RefitImage(author);
+
+            response.Data = author;
+            response.Code = 200;
+
+            return response;
+        }
+
+
+        //extension methods
         public async Task<string> SaveFileAsync(Stream file, string fileName)
         {
             //provideing names for file and storage
@@ -229,6 +261,5 @@ namespace Courselab.Service.Services
                                         HttpContextHelper.Context.Request.Host.Value + "/Images/" +
                                         author.Image;
         }
-
     }
 }

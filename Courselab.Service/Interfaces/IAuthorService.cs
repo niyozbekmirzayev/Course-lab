@@ -2,6 +2,8 @@
 using Courselab.Domain.Configurations;
 using Courselab.Domain.Entities.Authors;
 using Courselab.Service.DTOs.Authors;
+using Courselab.Service.DTOs.Commons;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +18,7 @@ namespace Courselab.Service.Interfaces
         Task<BaseResponse<Author>> GetByIdAsync(Guid id);
         BaseResponse<IEnumerable<Author>> GetAll(PaginationParams @params);
         Task<BaseResponse<Author>> UpdateAsync(AuthorForUpdateDto authorToUpdate);
+        Task<BaseResponse<Author>> SetImageAsync(SetImageDto setImageDto);
         Task<string> SaveFileAsync(Stream file, string fileName);
         void RefitImage(Author author);
     }

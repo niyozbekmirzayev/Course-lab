@@ -4,12 +4,14 @@ using Courselab.Domain.Configurations;
 using Courselab.Domain.Entities.Registraions;
 using Courselab.Domain.Entities.Students;
 using Courselab.Domain.Enums;
+using Courselab.Service.DTOs.Commons;
 using Courselab.Service.DTOs.Students;
 using Courselab.Service.Extensions;
 using Courselab.Service.Helpers;
 using Courselab.Service.Interfaces;
 using EduCenterWebAPI.Data.IRepositories;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -257,8 +259,38 @@ namespace Courselab.Service.Services
             return response;
         }
 
+        public async Task<BaseResponse<Student>> SetImageAsync(SetImageDto setImageDto) 
+        {
+            var response = new BaseResponse<Student>();
 
-        //extension services
+            var student = await unitOfWork.Students.GetAsync(student => student.Id.Equals(setImageDto.Id) &&
+                                                       student.Status != ObjectStatus.Deleted);
+
+            //checking if student to update does not exsist
+            if (student == null)
+            {
+                response.Error = new BaseError(code: 404, message: "Student not found");
+
+                return response;
+            }
+
+            student.Image = await SaveFileAsync(setImageDto.Image.OpenReadStream(), setImageDto.Image.FileName);
+
+            student.Modify();
+
+            //updating database
+            await unitOfWork.SaveChangesAsync();
+
+            RefitImage(student);
+
+            response.Data = student;
+            response.Code = 200;
+
+            return response;
+        }
+
+
+        //extension methods
         public async Task<string> SaveFileAsync(Stream file, string fileName)
         {
             //provideing names for file and storage
