@@ -80,26 +80,26 @@ namespace Courselab.Service.Services
                 return response;
             }
 
-            //mapping
+            // mapping
             Student newStudent = mapper.Map<Student>(studentCreationDto);
             newStudent.Password = newStudent.Password.EncodeInSha256();
 
             if (studentCreationDto.Image != null)
                 newStudent.Image = await SaveFileAsync(studentCreationDto.Image.OpenReadStream(), studentCreationDto.Image.FileName);
 
-            //updating database
+            // updating database
             newStudent.Create();
             var createdNewStudent = await unitOfWork.Students.InsertAsync(newStudent);
             await unitOfWork.SaveChangesAsync();
 
-            //checking if student has image
+            // checking if student has image
             if (studentCreationDto.Image != null)
                 createdNewStudent.Image = HttpContextHelper.Context.Request.Scheme + "://" +
                                         HttpContextHelper.Context.Request.Host.Value + "/Images/" +
                                         createdNewStudent.Image;
 
             response.Data = createdNewStudent;
-            response.Code = 200;
+            response.Code = 201;
 
             return response;
         }
@@ -111,7 +111,7 @@ namespace Courselab.Service.Services
             var student = await unitOfWork.Students.GetAsync(student => student.Id.Equals(id) &&
                                                        student.Status != ObjectStatus.Deleted);
 
-            //checking if student to delete does not exsist
+            // checking if student to delete does not exsist
             if (student == null)
             {
                 response.Error = new BaseError(code: 404, message: "Student not found");
@@ -119,7 +119,7 @@ namespace Courselab.Service.Services
                 return response;
             }
 
-            //updating database
+            // updating database
             student.Delete();
             await unitOfWork.SaveChangesAsync();
 
@@ -136,7 +136,7 @@ namespace Courselab.Service.Services
             var students = unitOfWork.Students.GetAll().Include("Registrations");
             var paginatedStudents = students.ToPagesList(@params);
 
-            //setting image
+            // setting image
             foreach (var student in paginatedStudents)
                 if (student.Image != null)
                     RefitImage(student);
@@ -152,8 +152,8 @@ namespace Courselab.Service.Services
             var response = new BaseResponse<Student>();
             var student = await unitOfWork.Students.GetAsync(student => student.Id == id &&
             student.Status != ObjectStatus.Deleted);
-
-            //checking if student does not exsist
+             
+            // checking if student does not exsist
             if (student == null)
             {
                 response.Error = new BaseError(code: 404, message: "Student not found");
@@ -177,7 +177,7 @@ namespace Courselab.Service.Services
             var student = await unitOfWork.Students.GetAsync(student => student.Id.Equals(studentToUpdate.Id) &&
                                                        student.Status != ObjectStatus.Deleted);
 
-            //checking if student to update does not exsist
+            // checking if student to update does not exsist
             if (student == null)
             {
                 response.Error = new BaseError(code: 404, message: "Student not found");
@@ -195,13 +195,13 @@ namespace Courselab.Service.Services
             student.Login = studentToUpdate.Login;
             student.Password = studentToUpdate.Password.EncodeInSha256();
 
-            //checking if image uploaded
+            // checking if image uploaded
             if (studentToUpdate.Image != null)
                 student.Image = await SaveFileAsync(studentToUpdate.Image.OpenReadStream(), studentToUpdate.Image.FileName);
 
             else student.Image = null;
 
-            //updating database
+            // updating database
             student.Modify();
             await unitOfWork.SaveChangesAsync();
 
@@ -249,12 +249,12 @@ namespace Courselab.Service.Services
 
             var createdRegistration = await unitOfWork.Registrations.InsertAsync(newRegistration);
 
-            //registring for course
+            // registring for course
             exsistStudent.Registrations.Add(createdRegistration);
 
             await unitOfWork.SaveChangesAsync();
             response.Data = exsistStudent;
-            response.Code = 200;
+            response.Code = 201;
 
             return response;
         }
@@ -266,7 +266,7 @@ namespace Courselab.Service.Services
             var student = await unitOfWork.Students.GetAsync(student => student.Id.Equals(setImageDto.Id) &&
                                                        student.Status != ObjectStatus.Deleted);
 
-            //checking if student to update does not exsist
+            // checking if student to update does not exsist
             if (student == null)
             {
                 response.Error = new BaseError(code: 404, message: "Student not found");
@@ -278,27 +278,27 @@ namespace Courselab.Service.Services
 
             student.Modify();
 
-            //updating database
+            // updating database
             await unitOfWork.SaveChangesAsync();
 
             RefitImage(student);
 
             response.Data = student;
-            response.Code = 200;
+            response.Code = 201;
 
             return response;
         }
 
 
-        //extension methods
+        // extension methods
         public async Task<string> SaveFileAsync(Stream file, string fileName)
         {
-            //provideing names for file and storage
+            // provideing names for file and storage
             fileName = Guid.NewGuid().ToString("N") + "_" + fileName;
             string storagePath = config.GetSection("Storage:ImagesUrl").Value;
             string filePath = Path.Combine(env.WebRootPath, $"{storagePath}/{fileName}");
 
-            //creating stream with given path to copy file from input 
+            // creating stream with given path to copy file from input 
             FileStream mainFile = File.Create(filePath);
             await file.CopyToAsync(mainFile);
             mainFile.Close();
