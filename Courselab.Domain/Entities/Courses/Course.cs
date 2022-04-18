@@ -13,7 +13,9 @@ namespace Courselab.Domain.Entities.Courses
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int Duration { get; set; }
+        public string YouTubePlayListLink { get; set; }
         public CourseType Type { get; set; }
+        public CourseLevel Level { get; set; }
         [JsonIgnore]
         public Guid AuthorId { get; set; }
         [ForeignKey(nameof(AuthorId))]
