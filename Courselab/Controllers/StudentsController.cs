@@ -60,7 +60,7 @@ namespace Courselab.API.Controllers
             return StatusCode(result.Code ?? result.Error.Code.Value, result);
         }
 
-        [HttpPut("[action]/{studentId}&{id}")]
+        [HttpPost("[action]/{id}&{courseId}")]
         public async Task<ActionResult<BaseResponse<Student>>>RegisterCourse(Guid id, Guid courseId)
         {
             var result = await studentService.BuyCourseAsync(id, courseId);
@@ -68,7 +68,7 @@ namespace Courselab.API.Controllers
             return StatusCode(result.Code ?? result.Error.Code.Value, result);
         }
 
-        [HttpPut("[action]")]
+        [HttpPost("[action]")]
         public async Task<ActionResult<BaseResponse<Student>>> SetImage([FromForm]SetImageDto setImageDto)
         {
             var result = await studentService.SetImageAsync(setImageDto);

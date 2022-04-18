@@ -133,7 +133,7 @@ namespace Courselab.Service.Services
         {
             var response = new BaseResponse<IEnumerable<Student>>();
 
-            var students = unitOfWork.Students.GetAll().Include("Registrations");
+            var students = unitOfWork.Students.GetAll().Include("Registrations.Course");
             var paginatedStudents = students.ToPagesList(@params);
 
             // setting image
@@ -150,10 +150,14 @@ namespace Courselab.Service.Services
         public async Task<BaseResponse<Student>> GetByIdAsync(Guid id)
         {
             var response = new BaseResponse<Student>();
-            var student = await unitOfWork.Students.GetAsync(student => student.Id == id &&
-            student.Status != ObjectStatus.Deleted);
-             
-            // checking if student does not exsist
+            var student = await unitOfWork.Students.GetAll(
+                                                            student => student.Id.Equals(id) &&
+                                                            student.Status != ObjectStatus.Deleted
+                                                            )
+                                                            .Include("Registrations.Course")
+                                                            .FirstAsync();
+
+            //checking if student does not exsist
             if (student == null)
             {
                 response.Error = new BaseError(code: 404, message: "Student not found");
@@ -218,10 +222,12 @@ namespace Courselab.Service.Services
         {
             var response = new BaseResponse<Student>();
 
-            var exsistStudent = await unitOfWork.Students.GetAsync(
-                student => student.Id.Equals(studentId) &&
-                student.Status != ObjectStatus.Deleted
-                );
+            var exsistStudent = await unitOfWork.Students.GetAll(
+                                                            student => student.Id.Equals(studentId) &&
+                                                            student.Status != ObjectStatus.Deleted
+                                                            )
+                                                            .Include("Registrations.Course")
+                                                            .FirstAsync();
 
             // checking if studnet does not exsist
             if (exsistStudent == null)
@@ -244,12 +250,25 @@ namespace Courselab.Service.Services
                 return response;
             }
 
+            //checking if student has not already bought current course
+            ICollection<Registration> registrations = exsistStudent.Registrations;
+            
+            foreach(var registration in registrations) 
+            {
+                if(registration.Course.Id == CourseId) 
+                {
+                    response.Error = new BaseError(code: 409, message: "Course already registrated");
+
+                    return response;
+                };
+            }
+
+            // registring for course
             var newRegistration = new Registration();
             newRegistration.Start(exsistCourse);
 
             var createdRegistration = await unitOfWork.Registrations.InsertAsync(newRegistration);
 
-            // registring for course
             exsistStudent.Registrations.Add(createdRegistration);
 
             await unitOfWork.SaveChangesAsync();
