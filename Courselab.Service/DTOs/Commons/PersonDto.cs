@@ -14,7 +14,7 @@ namespace Courselab.Service.DTOs.Commons
         public string LastName { get; set; }
         [Required]
         public Gender Gender { get; set; }
-        public DateTime DataOfBirth { get; set; }
+        public DateTime? DataOfBirth { get; set; }
         public string About { get; set; }
         [Required]
         [EmailAddress]
