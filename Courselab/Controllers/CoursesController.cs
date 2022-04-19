@@ -23,7 +23,7 @@ namespace Courselab.API.Controllers
         {
             var result = await courseService.CreateAsync(courseCreationalDto);
 
-            //identification of error 
+            //  Identification of error 
             if (result.Error is not null)
             {
                 if (result.Error.Code == 404) return NotFound(result);
@@ -39,7 +39,7 @@ namespace Courselab.API.Controllers
         {
             var result = courseService.GetAll(@params);
 
-            //identification of error 
+            // Identification of error 
             if (result.Error is not null)
             {
                 if (result.Error.Code == 404) return NotFound(result);
@@ -55,7 +55,7 @@ namespace Courselab.API.Controllers
         {
             var result = await courseService.GetByIdAsync(id);
 
-            //identification of error 
+            // Identification of error 
             if (result.Error is not null)
             {
                 if (result.Error.Code == 404) return NotFound(result);
@@ -71,7 +71,7 @@ namespace Courselab.API.Controllers
         {
             var result = await courseService.DeleteAsync(id);
 
-            //identification of error 
+            // Identification of error 
             if (result.Error is not null)
             {
                 if (result.Error.Code == 404) return NotFound(result);
@@ -87,7 +87,7 @@ namespace Courselab.API.Controllers
         {
             var result = await courseService.UpdateAsync(courseForUpdate);
 
-            //identification of error 
+            // Identification of error 
             if (result.Error is not null)
             {
                 if (result.Error.Code == 404) return NotFound(result);
