@@ -14,11 +14,8 @@ namespace Courselab.Service.DTOs.Commons
         public string LastName { get; set; }
         [Required]
         public Gender Gender { get; set; }
-        [Required]
-        public DateTime BrithDate { get; set; }
-        [Required]
-        [Phone]
-        public string PhoneNumber { get; set; }
+        public DateTime DataOfBirh { get; set; }
+        public string About { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }
@@ -26,7 +23,7 @@ namespace Courselab.Service.DTOs.Commons
         [MaxFileSize(500)]
         public IFormFile Image { get; set; }
         [Required]
-        public string Login { get; set; }
+        public string UserName { get; set; }
         [Required]
         [Password(8)]
         public string Password { get; set; }

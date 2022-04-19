@@ -1,5 +1,6 @@
 ﻿using Courselab.Domain.CustomAttributes;
 using Courselab.Domain.Enums;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,17 +12,15 @@ namespace Courselab.Service.DTOs.Courses
         public string Name { get; set; }
         [Required]
         public string Description { get; set; }
+        public IFormFile Image { get; set; }
+        public IFormFile GuidVideo { get; set; }
         [Required]
-        public decimal Price { get; set; }
-        [Required]
-        [YouTubeLink]
-        public string YouTubePlayListLink { get; set; }
-        [Required]
-        public int Duration { get; set; }
+        public CourseType Type { get; set; }
         [Required]
         public CourseLevel Level { get; set; }
         [Required]
-        public CourseType Type { get; set; }
+        [YouTubeLink]
+        public string YouTubePlayListLink { get; set; }
         [Required]
         public Guid AuthorId { get; set; }
     }

@@ -1,7 +1,6 @@
 ﻿using Courselab.Domain.Commons;
 using Courselab.Domain.Configurations;
 using Courselab.Service.DTOs.Commons;
-using Courselab.Service.DTOs.Students;
 using Courselab.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;

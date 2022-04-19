@@ -5,10 +5,12 @@ using Courselab.Domain.Entities.Courses;
 using Courselab.Domain.Enums;
 using Courselab.Service.DTOs.Courses;
 using Courselab.Service.Extensions;
+using Courselab.Service.Helpers;
 using Courselab.Service.Interfaces;
 using EduCenterWebAPI.Data.IRepositories;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,25 +22,24 @@ namespace Courselab.Service.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly IWebHostEnvironment env;
+        private readonly IConfiguration config;
 
-        public CourseService(
-            IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment env)
+        public CourseService(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment env, IConfiguration config)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
             this.env = env;
+            this.config = config;
         }
 
         public async Task<BaseResponse<Course>> CreateAsync(CourseForCreationDto courseCreationDto)
         {
             var response = new BaseResponse<Course>();
 
-            var exsitAuthor = await unitOfWork.Authors.GetAsync(
-                author => author.Id.Equals(courseCreationDto.AuthorId) &&
-                author.Status != ObjectStatus.Deleted
-                );
+            var exsitAuthor = await unitOfWork.Users.GetAsync(author => author.Id.Equals(courseCreationDto.AuthorId) &&
+                                                               author.Status != ObjectStatus.Deleted);
 
-            //checking if author exsists
+            // Checking if user exsists
             if (exsitAuthor == null)
             {
                 response.Error = new BaseError(code: 404, message: "Author not found");
@@ -47,12 +48,12 @@ namespace Courselab.Service.Services
             }
 
             Course exsistCourse = await unitOfWork.Courses.GetAsync(
-                course => course.Name.Equals(courseCreationDto.Name) &&
-                course.Status != ObjectStatus.Deleted &&
-                course.AuthorId.Equals(courseCreationDto.AuthorId)
-                );
+                                                                    course => course.Name.Equals(courseCreationDto.Name) &&
+                                                                    course.Status != ObjectStatus.Deleted &&
+                                                                    course.AuthorId.Equals(courseCreationDto.AuthorId)
+                                                                    );
 
-            // checking if course is not unique for author
+            // Checking if course is not unique for user
             if (exsistCourse != null)
             {
                 response.Error = new BaseError(code: 409, message: "Author already has the course");
@@ -60,16 +61,15 @@ namespace Courselab.Service.Services
                 return response;
             }
 
-            //mapping
+            // Mapping
             Course newCourse = mapper.Map<Course>(courseCreationDto);
 
-            //updating database
+            // Updating database
             newCourse.Create();
             var createdNewcourse = await unitOfWork.Courses.InsertAsync(newCourse);
             await unitOfWork.SaveChangesAsync();
 
             response.Data = createdNewcourse;
-            response.Code = 200;
 
             return response;
         }
@@ -79,9 +79,9 @@ namespace Courselab.Service.Services
             var response = new BaseResponse<bool>();
 
             Course course = await unitOfWork.Courses.GetAsync(course => course.Id.Equals(id) &&
-                                                       course.Status != ObjectStatus.Deleted);
+                                                              course.Status != ObjectStatus.Deleted);
 
-            //checking if author to delete does not exsist
+            // Checking if course to delete does not exsist
             if (course == null)
             {
                 response.Error = new BaseError(code: 404, message: "Course not found");
@@ -89,11 +89,10 @@ namespace Courselab.Service.Services
                 return response;
             }
 
-            //updating database
+            // Updating database
             course.Delete();
             await unitOfWork.SaveChangesAsync();
-
-            response.Code = 200;
+            
             response.Data = true;
 
             return response;
@@ -107,7 +106,6 @@ namespace Courselab.Service.Services
             var paginatedCourses = courses.ToPagesList(@params);
 
             response.Data = paginatedCourses;
-            response.Code = 200;
 
             return response;
         }
@@ -116,10 +114,12 @@ namespace Courselab.Service.Services
         {
             var response = new BaseResponse<Course>();
 
-            Course course = await unitOfWork.Courses.GetAsync(course => course.Id == id &&
-            course.Status != ObjectStatus.Deleted);
+            var course = await unitOfWork.Courses.GetAll(course => course.Id == id &&
+                                                          course.Status != ObjectStatus.Deleted)
+                                                         .Include("Author")
+                                                         .FirstOrDefaultAsync();
 
-            //checking if course does not exsist
+            // Checking if course does not exsist
             if (course == null)
             {
                 response.Error = new BaseError(code: 404, message: "Course not found");
@@ -128,7 +128,6 @@ namespace Courselab.Service.Services
             }
 
             response.Data = course;
-            response.Code = 200;
 
             return response;
         }
@@ -137,10 +136,12 @@ namespace Courselab.Service.Services
         {
             var response = new BaseResponse<Course>();
 
-            var exsistCourse = await unitOfWork.Courses.GetAsync(course => course.Id.Equals(courseToUpdate.Id) &&
-                                                       course.Status != ObjectStatus.Deleted);
+            var fileHelper = new FileHelper(config, env);
 
-            //checking if course to update does not exsist
+            var exsistCourse = await unitOfWork.Courses.GetAsync(course => course.Id.Equals(courseToUpdate.Id) &&
+                                                                 course.Status != ObjectStatus.Deleted);
+
+            // Checking if course to update does not exsist
             if (exsistCourse == null)
             {
                 response.Error = new BaseError(code: 404, message: "Course not found");
@@ -148,12 +149,10 @@ namespace Courselab.Service.Services
                 return response;
             }
 
-            var exsitAuthor = await unitOfWork.Authors.GetAsync(
-                author => author.Id.Equals(courseToUpdate.AuthorId) &&
-                author.Status != ObjectStatus.Deleted
-                );
+            var exsitAuthor = await unitOfWork.Users.GetAsync(author => author.Id.Equals(courseToUpdate.AuthorId) &&
+                                                              author.Status != ObjectStatus.Deleted);
 
-            //checking if author does not exsist
+            // Checking if author does not exsist
             if (exsitAuthor == null)
             {
                 response.Error = new BaseError(code: 404, message: "Author not found");
@@ -161,22 +160,53 @@ namespace Courselab.Service.Services
                 return response;
             }
 
-            //mapping
+            // Mapping
             exsistCourse.Name = courseToUpdate.Name;
             exsistCourse.Description = courseToUpdate.Description;
-            exsistCourse.Price = courseToUpdate.Price;
-            exsistCourse.Duration = courseToUpdate.Duration;
             exsistCourse.Type = courseToUpdate.Type;
+            exsistCourse.Level = exsistCourse.Level;
+            exsistCourse.YouTubePlayListLink = courseToUpdate.YouTubePlayListLink;
             exsistCourse.AuthorId = courseToUpdate.AuthorId;
 
-            //updating database
+            // Checking if media file uploaded
+            string imageSection = "ImagesUrl:Images";
+            string videoSection = "VideosUrl:Videos";
+            if (courseToUpdate.Image != null)
+                exsistCourse.Image = await fileHelper.SaveFileAsync(courseToUpdate.Image.OpenReadStream(), courseToUpdate.Image.FileName, imageSection);
+
+            if (courseToUpdate.GuidVideo != null)
+                exsistCourse.GuidVideo = await fileHelper.SaveFileAsync(courseToUpdate.GuidVideo.OpenReadStream(), courseToUpdate.GuidVideo.FileName, videoSection);
+
+
+            // Updating database
             exsistCourse.Modify();
             await unitOfWork.SaveChangesAsync();
 
+            //uploading link of media instead of name
+            if (exsistCourse.Image != null)
+                RefitImage(exsistCourse);
+
+            if (exsistCourse.GuidVideo != null)
+                RefitVideo(exsistCourse);
+
             response.Data = exsistCourse;
-            response.Code = 200;
 
             return response;
+        }
+
+        //Helper methods
+        public void RefitImage(Course course)
+        {
+            course.Image = HttpContextHelper.Context.Request.Scheme + "://" +
+                           HttpContextHelper.Context.Request.Host.Value + "/Images/" +
+                           course.Image;
+        }
+
+        public void RefitVideo(Course course)
+        {
+            course.GuidVideo = HttpContextHelper.Context.Request.Scheme + "://" +
+                               HttpContextHelper.Context.Request.Host.Value + "/Videos/" +
+                               course.GuidVideo;
         }
 
     }

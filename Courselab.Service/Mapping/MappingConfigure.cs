@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Courselab.Domain.Entities.Courses;
-using Courselab.Service.DTOs.Authors;
+using Courselab.Domain.Entities.Users;
 using Courselab.Service.DTOs.Courses;
-using Courselab.Service.DTOs.Students;
+using Courselab.Service.DTOs.Users;
 
 namespace Courselab.Service.Mapping
 {
@@ -10,8 +10,7 @@ namespace Courselab.Service.Mapping
     {
         public MappingConfigure()
         {
-            CreateMap<Student, StudentForCreationDto>().ReverseMap();
-            CreateMap<Author, AuthorForCreationDto>().ReverseMap();
+            CreateMap<User, UserForCreationDto>().ReverseMap();
             CreateMap<Course, CourseForCreationDto>().ReverseMap();
         }
     }

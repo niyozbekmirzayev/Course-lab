@@ -7,7 +7,7 @@ namespace Courselab.Service.DTOs.Commons
     public class SetImageDto
     {
         [Required]
-        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         [Required]
         public IFormFile Image { get; set; }
     }

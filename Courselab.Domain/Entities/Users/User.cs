@@ -10,6 +10,7 @@ namespace Courselab.Domain.Entities.Users
         public User()
         {
             Registrations = new List<Registration>();
+            Courses = new List<Course>();
         }
 
         public virtual ICollection<Registration> Registrations { get; set; }

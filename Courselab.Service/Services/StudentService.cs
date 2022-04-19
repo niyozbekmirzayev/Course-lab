@@ -4,7 +4,6 @@ using Courselab.Domain.Configurations;
 using Courselab.Domain.Entities.Registraions;
 using Courselab.Domain.Enums;
 using Courselab.Service.DTOs.Commons;
-using Courselab.Service.DTOs.Students;
 using Courselab.Service.Extensions;
 using Courselab.Service.Helpers;
 using Courselab.Service.Interfaces;
@@ -19,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Courselab.Service.Services
 {
-    public class StudentService : IStudentService
+    public class StudentService 
     {
         private readonly IConfiguration config;
         private readonly IUnitOfWork unitOfWork;
@@ -308,11 +307,11 @@ namespace Courselab.Service.Services
 
 
         // extension methods
-        public async Task<string> SaveFileAsync(Stream file, string fileName)
+        public async Task<string> SaveFileAsync(Stream file, string fileName, string section )
         {
             // provideing names for file and storage
             fileName = Guid.NewGuid().ToString("N") + "_" + fileName;
-            string storagePath = config.GetSection("Storage:ImagesUrl").Value;
+            string storagePath = config.GetSection(section).Value;
             string filePath = Path.Combine(env.WebRootPath, $"{storagePath}/{fileName}");
 
             // creating stream with given path to copy file from input 

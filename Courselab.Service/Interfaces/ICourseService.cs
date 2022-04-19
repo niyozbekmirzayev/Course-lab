@@ -15,5 +15,8 @@ namespace Courselab.Service.Interfaces
         Task<BaseResponse<Course>> GetByIdAsync(Guid id);
         BaseResponse<IEnumerable<Course>> GetAll(PaginationParams @params);
         Task<BaseResponse<Course>> UpdateAsync(CourseForUpdateDto courseToUpdate);
+
+        void RefitImage(Course course);
+        void RefitVideo(Course course);
     }
 }
