@@ -257,7 +257,7 @@ namespace Courselab.Service.Services
             user.FirstName = userToUpdate.FirstName;
             user.LastName = userToUpdate.LastName;
             user.Gender = userToUpdate.Gender;
-            user.DateOfBirth = userToUpdate.DataOfBirh;
+            user.DateOfBirth = userToUpdate.DataOfBirth;
             user.About = userToUpdate.About;
             user.Email = userToUpdate.Email;
             user.Username = userToUpdate.Username;
