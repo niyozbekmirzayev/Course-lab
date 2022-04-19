@@ -2,7 +2,6 @@
 using Courselab.Domain.Commons;
 using Courselab.Domain.Configurations;
 using Courselab.Domain.Entities.Registraions;
-using Courselab.Domain.Entities.Students;
 using Courselab.Domain.Enums;
 using Courselab.Service.DTOs.Commons;
 using Courselab.Service.DTOs.Students;
@@ -11,7 +10,6 @@ using Courselab.Service.Helpers;
 using Courselab.Service.Interfaces;
 using EduCenterWebAPI.Data.IRepositories;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -252,10 +250,10 @@ namespace Courselab.Service.Services
 
             //checking if student has not already bought current course
             ICollection<Registration> registrations = exsistStudent.Registrations;
-            
-            foreach(var registration in registrations) 
+
+            foreach (var registration in registrations)
             {
-                if(registration.Course.Id == CourseId) 
+                if (registration.Course.Id == CourseId)
                 {
                     response.Error = new BaseError(code: 409, message: "Course already registrated");
 
@@ -278,7 +276,7 @@ namespace Courselab.Service.Services
             return response;
         }
 
-        public async Task<BaseResponse<Student>> SetImageAsync(SetImageDto setImageDto) 
+        public async Task<BaseResponse<Student>> SetImageAsync(SetImageDto setImageDto)
         {
             var response = new BaseResponse<Student>();
 
@@ -325,7 +323,7 @@ namespace Courselab.Service.Services
             return fileName;
         }
 
-        public void RefitImage(Student student) 
+        public void RefitImage(Student student)
         {
             student.Image = HttpContextHelper.Context.Request.Scheme + "://" +
                                         HttpContextHelper.Context.Request.Host.Value + "/Images/" +

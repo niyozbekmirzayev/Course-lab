@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Courselab.Domain.Entities.Authors;
 using Courselab.Domain.Entities.Courses;
-using Courselab.Domain.Entities.Students;
 using Courselab.Service.DTOs.Authors;
 using Courselab.Service.DTOs.Courses;
 using Courselab.Service.DTOs.Students;

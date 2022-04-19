@@ -73,7 +73,7 @@ namespace Courselab.Service.Services
 
             return response;
         }
-        
+
         public async Task<BaseResponse<bool>> DeleteAsync(Guid id)
         {
             var response = new BaseResponse<bool>();
@@ -98,7 +98,7 @@ namespace Courselab.Service.Services
 
             return response;
         }
-        
+
         public BaseResponse<IEnumerable<Course>> GetAll(PaginationParams @params)
         {
             var response = new BaseResponse<IEnumerable<Course>>();
@@ -111,11 +111,11 @@ namespace Courselab.Service.Services
 
             return response;
         }
-        
+
         public async Task<BaseResponse<Course>> GetByIdAsync(Guid id)
         {
             var response = new BaseResponse<Course>();
-            
+
             Course course = await unitOfWork.Courses.GetAsync(course => course.Id == id &&
             course.Status != ObjectStatus.Deleted);
 
@@ -132,7 +132,7 @@ namespace Courselab.Service.Services
 
             return response;
         }
-        
+
         public async Task<BaseResponse<Course>> UpdateAsync(CourseForUpdateDto courseToUpdate)
         {
             var response = new BaseResponse<Course>();

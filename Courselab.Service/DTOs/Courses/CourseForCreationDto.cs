@@ -1,4 +1,5 @@
-﻿using Courselab.Domain.Enums;
+﻿using Courselab.Domain.CustomAttributes;
+using Courselab.Domain.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,7 +14,12 @@ namespace Courselab.Service.DTOs.Courses
         [Required]
         public decimal Price { get; set; }
         [Required]
+        [YouTubeLink]
+        public string YouTubePlayListLink { get; set; }
+        [Required]
         public int Duration { get; set; }
+        [Required]
+        public CourseLevel Level { get; set; }
         [Required]
         public CourseType Type { get; set; }
         [Required]

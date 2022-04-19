@@ -9,11 +9,11 @@ namespace Courselab.Domain.CustomAttributes
         private readonly int minPasswordLenth;
 
         public PasswordAttribute(int minPasswordLenth) => this.minPasswordLenth = minPasswordLenth;
-        
+
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var password = value as String;
-            
+
             if (password != null)
                 if (password.Length >= minPasswordLenth)
                     if (password.Any(char.IsUpper))

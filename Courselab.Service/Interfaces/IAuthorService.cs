@@ -1,9 +1,7 @@
 ﻿using Courselab.Domain.Commons;
 using Courselab.Domain.Configurations;
-using Courselab.Domain.Entities.Authors;
 using Courselab.Service.DTOs.Authors;
 using Courselab.Service.DTOs.Commons;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Courselab.Domain.Commons;
 using Courselab.Domain.Configurations;
-using Courselab.Domain.Entities.Authors;
 using Courselab.Domain.Enums;
 using Courselab.Service.DTOs.Authors;
 using Courselab.Service.DTOs.Commons;
@@ -10,7 +9,6 @@ using Courselab.Service.Helpers;
 using Courselab.Service.Interfaces;
 using EduCenterWebAPI.Data.IRepositories;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -144,7 +142,7 @@ namespace Courselab.Service.Services
         public async Task<BaseResponse<Author>> GetByIdAsync(Guid id)
         {
             var response = new BaseResponse<Author>();
-            
+
             var author = await unitOfWork.Authors.GetAsync(author => author.Id == id &&
             author.Status != ObjectStatus.Deleted);
 

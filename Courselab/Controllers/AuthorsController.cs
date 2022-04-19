@@ -1,10 +1,8 @@
 ﻿using Courselab.Domain.Commons;
 using Courselab.Domain.Configurations;
-using Courselab.Domain.Entities.Authors;
 using Courselab.Service.DTOs.Authors;
 using Courselab.Service.DTOs.Commons;
 using Courselab.Service.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -61,7 +59,7 @@ namespace Courselab.API.Controllers
         }
 
         [HttpPut("[action]")]
-        public async Task<ActionResult<BaseResponse<Author>>> SetImage([FromForm]SetImageDto setImageDto)
+        public async Task<ActionResult<BaseResponse<Author>>> SetImage([FromForm] SetImageDto setImageDto)
         {
             var result = await authorService.SetImageAsync(setImageDto);
 

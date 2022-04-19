@@ -1,10 +1,8 @@
 ﻿using Courselab.Domain.Commons;
 using Courselab.Domain.Configurations;
-using Courselab.Domain.Entities.Students;
 using Courselab.Service.DTOs.Commons;
 using Courselab.Service.DTOs.Students;
 using Courselab.Service.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -61,7 +59,7 @@ namespace Courselab.API.Controllers
         }
 
         [HttpPost("[action]/{id}&{courseId}")]
-        public async Task<ActionResult<BaseResponse<Student>>>RegisterCourse(Guid id, Guid courseId)
+        public async Task<ActionResult<BaseResponse<Student>>> RegisterCourse(Guid id, Guid courseId)
         {
             var result = await studentService.BuyCourseAsync(id, courseId);
 
@@ -69,7 +67,7 @@ namespace Courselab.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<ActionResult<BaseResponse<Student>>> SetImage([FromForm]SetImageDto setImageDto)
+        public async Task<ActionResult<BaseResponse<Student>>> SetImage([FromForm] SetImageDto setImageDto)
         {
             var result = await studentService.SetImageAsync(setImageDto);
 

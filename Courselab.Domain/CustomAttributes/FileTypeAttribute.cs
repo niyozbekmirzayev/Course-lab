@@ -10,7 +10,7 @@ namespace Courselab.Domain.CustomAttributes
     {
         private readonly string[] extensions;
         public FileTypeAttribute(string[] extensions) => this.extensions = extensions;
-        
+
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {

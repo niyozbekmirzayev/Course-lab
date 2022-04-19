@@ -36,7 +36,7 @@ namespace Courselab.Data.Respositories
             return expression == null ? dbSet : dbSet.Where(expression);
         }
 
-        public  async Task<T> GetAsync(Expression<Func<T, bool>> expression)
+        public async Task<T> GetAsync(Expression<Func<T, bool>> expression)
         {
             return await dbSet.FirstOrDefaultAsync(expression);
         }

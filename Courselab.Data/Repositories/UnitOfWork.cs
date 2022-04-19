@@ -13,7 +13,7 @@ namespace EduCenterWebAPI.Data.Respositories
 
         public ICourseRepository Courses { get; private set; }
 
-        public IStudentRepository Students { get; private set; }
+        public IUserRepository Students { get; private set; }
 
         public IAuthorRepository Authors { get; private set; }
 

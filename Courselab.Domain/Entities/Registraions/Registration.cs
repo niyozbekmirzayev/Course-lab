@@ -14,7 +14,7 @@ namespace Courselab.Domain.Entities.Registraions
         public virtual Course Course { get; set; }
         public DateTime StartedDate { get; set; } = DateTime.Now;
 
-        public void Start(Course course) 
+        public void Start(Course course)
         {
             StartedDate = DateTime.Now;
             CourseId = course.Id;

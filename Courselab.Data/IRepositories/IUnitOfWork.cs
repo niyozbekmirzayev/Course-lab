@@ -6,7 +6,7 @@ namespace EduCenterWebAPI.Data.IRepositories
 {
     public interface IUnitOfWork : IDisposable
     {
-        IStudentRepository Students { get; }
+        IUserRepository Students { get; }
         ICourseRepository Courses { get; }
         IAuthorRepository Authors { get; }
         IRegistrationRepository Registrations { get; }
