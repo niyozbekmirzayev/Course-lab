@@ -13,9 +13,7 @@ namespace EduCenterWebAPI.Data.Respositories
 
         public ICourseRepository Courses { get; private set; }
 
-        public IUserRepository Students { get; private set; }
-
-        public IAuthorRepository Authors { get; private set; }
+        public IUserRepository Users { get; private set; }
 
         public IRegistrationRepository Registrations { get; private set; }
 
@@ -23,8 +21,7 @@ namespace EduCenterWebAPI.Data.Respositories
         {
             this.context = context;
             Courses = new CourseRepository(context);
-            Students = new StudentRepository(context);
-            Authors = new AuthorRepository(context);
+            Users = new UserRepository(context);
             Registrations = new RegistrationRepository(context);
         }
 

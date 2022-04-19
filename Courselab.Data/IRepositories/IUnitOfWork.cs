@@ -6,7 +6,7 @@ namespace EduCenterWebAPI.Data.IRepositories
 {
     public interface IUnitOfWork : IDisposable
     {
-        IUserRepository Students { get; }
+        IUserRepository Users { get; }
         ICourseRepository Courses { get; }
         IRegistrationRepository Registrations { get; }
         Task SaveChangesAsync();
