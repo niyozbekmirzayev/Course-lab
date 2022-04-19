@@ -8,7 +8,6 @@ namespace EduCenterWebAPI.Data.IRepositories
     {
         IUserRepository Students { get; }
         ICourseRepository Courses { get; }
-        IAuthorRepository Authors { get; }
         IRegistrationRepository Registrations { get; }
         Task SaveChangesAsync();
     }
