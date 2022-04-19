@@ -23,6 +23,8 @@ namespace Courselab.Service.Services
         private readonly IMapper mapper;
         private readonly IWebHostEnvironment env;
         private readonly IConfiguration config;
+        private readonly string imageSection = "ImagesUrl:Images";
+        private readonly string videoSection = "VideosUrl:Videos";
 
         public CourseService(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment env, IConfiguration config)
         {
@@ -36,6 +38,8 @@ namespace Courselab.Service.Services
         {
             var response = new BaseResponse<Course>();
 
+            var fileHelper = new FileHelper(config, env);
+
             var exsitAuthor = await unitOfWork.Users.GetAsync(author => author.Id.Equals(courseCreationDto.AuthorId) &&
                                                                author.Status != ObjectStatus.Deleted);
 
@@ -47,11 +51,9 @@ namespace Courselab.Service.Services
                 return response;
             }
 
-            Course exsistCourse = await unitOfWork.Courses.GetAsync(
-                                                                    course => course.Name.Equals(courseCreationDto.Name) &&
+            Course exsistCourse = await unitOfWork.Courses.GetAsync(course => course.Name.Equals(courseCreationDto.Name) &&
                                                                     course.Status != ObjectStatus.Deleted &&
-                                                                    course.AuthorId.Equals(courseCreationDto.AuthorId)
-                                                                    );
+                                                                    course.AuthorId.Equals(courseCreationDto.AuthorId));
 
             // Checking if course is not unique for user
             if (exsistCourse != null)
@@ -62,14 +64,28 @@ namespace Courselab.Service.Services
             }
 
             // Mapping
-            Course newCourse = mapper.Map<Course>(courseCreationDto);
+            var newCourse = mapper.Map<Course>(courseCreationDto);
+
+            // Checking if media file uploaded
+            if (courseCreationDto.Image != null)
+                newCourse.Image = await fileHelper.SaveFileAsync(courseCreationDto.Image.OpenReadStream(), courseCreationDto.Image.FileName, imageSection);
+
+            if (courseCreationDto.GuidVideo != null)
+                newCourse.GuidVideo = await fileHelper.SaveFileAsync(courseCreationDto.GuidVideo.OpenReadStream(), courseCreationDto.GuidVideo.FileName, videoSection);
 
             // Updating database
             newCourse.Create();
-            var createdNewcourse = await unitOfWork.Courses.InsertAsync(newCourse);
+            var createdNewCourse = await unitOfWork.Courses.InsertAsync(newCourse);
             await unitOfWork.SaveChangesAsync();
 
-            response.Data = createdNewcourse;
+            // Uploading link of media instead of name
+            if (createdNewCourse.Image != null)
+                RefitImage(createdNewCourse);
+
+            if (createdNewCourse.GuidVideo != null)
+                RefitVideo(exsistCourse);
+
+            response.Data = createdNewCourse;
 
             return response;
         }
@@ -92,7 +108,7 @@ namespace Courselab.Service.Services
             // Updating database
             course.Delete();
             await unitOfWork.SaveChangesAsync();
-            
+
             response.Data = true;
 
             return response;
@@ -169,20 +185,21 @@ namespace Courselab.Service.Services
             exsistCourse.AuthorId = courseToUpdate.AuthorId;
 
             // Checking if media file uploaded
-            string imageSection = "ImagesUrl:Images";
-            string videoSection = "VideosUrl:Videos";
             if (courseToUpdate.Image != null)
                 exsistCourse.Image = await fileHelper.SaveFileAsync(courseToUpdate.Image.OpenReadStream(), courseToUpdate.Image.FileName, imageSection);
+
+            else exsistCourse.Image = null;
 
             if (courseToUpdate.GuidVideo != null)
                 exsistCourse.GuidVideo = await fileHelper.SaveFileAsync(courseToUpdate.GuidVideo.OpenReadStream(), courseToUpdate.GuidVideo.FileName, videoSection);
 
+            else exsistCourse.GuidVideo = null;
 
             // Updating database
             exsistCourse.Modify();
             await unitOfWork.SaveChangesAsync();
 
-            //uploading link of media instead of name
+            // Uploading link of media instead of name
             if (exsistCourse.Image != null)
                 RefitImage(exsistCourse);
 

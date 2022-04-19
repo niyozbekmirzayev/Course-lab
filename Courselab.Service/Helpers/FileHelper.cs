@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Courselab.Service.Helpers
@@ -18,7 +15,7 @@ namespace Courselab.Service.Helpers
             this.config = config;
             this.env = env;
         }
-        
+
         public async Task<string> SaveFileAsync(Stream file, string fileName, string section)
         {
             // Provideing names for file and storage

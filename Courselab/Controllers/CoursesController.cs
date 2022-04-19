@@ -23,7 +23,15 @@ namespace Courselab.API.Controllers
         {
             var result = await courseService.CreateAsync(courseCreationalDto);
 
-            return StatusCode(result.Code ?? result.Error.Code.Value, result);
+            //identification of error 
+            if (result.Error is not null)
+            {
+                if (result.Error.Code == 404) return NotFound(result);
+                else if (result.Error.Code == 400) return BadRequest(result);
+                else if (result.Error.Code == 409) return Conflict(result);
+            }
+
+            return Ok(result);
         }
 
         [HttpGet]
@@ -31,7 +39,15 @@ namespace Courselab.API.Controllers
         {
             var result = courseService.GetAll(@params);
 
-            return StatusCode(result.Code ?? result.Error.Code.Value, result);
+            //identification of error 
+            if (result.Error is not null)
+            {
+                if (result.Error.Code == 404) return NotFound(result);
+                else if (result.Error.Code == 400) return BadRequest(result);
+                else if (result.Error.Code == 409) return Conflict(result);
+            }
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -39,7 +55,15 @@ namespace Courselab.API.Controllers
         {
             var result = await courseService.GetByIdAsync(id);
 
-            return StatusCode(result.Code ?? result.Error.Code.Value, result);
+            //identification of error 
+            if (result.Error is not null)
+            {
+                if (result.Error.Code == 404) return NotFound(result);
+                else if (result.Error.Code == 400) return BadRequest(result);
+                else if (result.Error.Code == 409) return Conflict(result);
+            }
+
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
@@ -47,7 +71,15 @@ namespace Courselab.API.Controllers
         {
             var result = await courseService.DeleteAsync(id);
 
-            return StatusCode(result.Code ?? result.Error.Code.Value, result);
+            //identification of error 
+            if (result.Error is not null)
+            {
+                if (result.Error.Code == 404) return NotFound(result);
+                else if (result.Error.Code == 400) return BadRequest(result);
+                else if (result.Error.Code == 409) return Conflict(result);
+            }
+
+            return Ok(result);
         }
 
         [HttpPut]
@@ -55,7 +87,15 @@ namespace Courselab.API.Controllers
         {
             var result = await courseService.UpdateAsync(courseForUpdate);
 
-            return StatusCode(result.Code ?? result.Error.Code.Value, result);
+            //identification of error 
+            if (result.Error is not null)
+            {
+                if (result.Error.Code == 404) return NotFound(result);
+                else if (result.Error.Code == 400) return BadRequest(result);
+                else if (result.Error.Code == 409) return Conflict(result);
+            }
+
+            return Ok(result);
         }
 
     }

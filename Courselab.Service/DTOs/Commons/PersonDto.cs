@@ -23,7 +23,7 @@ namespace Courselab.Service.DTOs.Commons
         [MaxFileSize(500)]
         public IFormFile Image { get; set; }
         [Required]
-        public string UserName { get; set; }
+        public string Username { get; set; }
         [Required]
         [Password(8)]
         public string Password { get; set; }

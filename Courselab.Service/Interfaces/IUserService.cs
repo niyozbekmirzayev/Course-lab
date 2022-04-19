@@ -5,7 +5,6 @@ using Courselab.Service.DTOs.Commons;
 using Courselab.Service.DTOs.Users;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace Courselab.Service.Interfaces
@@ -20,7 +19,6 @@ namespace Courselab.Service.Interfaces
         Task<BaseResponse<User>> BuyCourseAsync(Guid userId, Guid courseId);
         Task<BaseResponse<User>> SetImageAsync(SetImageDto setImageDto);
 
-        Task<string> SaveFileAsync(Stream file, string fileName);
         void RefitImage(User user);
     }
 }

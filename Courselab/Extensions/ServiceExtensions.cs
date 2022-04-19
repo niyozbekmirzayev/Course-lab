@@ -11,8 +11,7 @@ namespace Courselab.API.Extensions
         public static void AddCustomService(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IStudentService, StudentService>();
-            services.AddScoped<IAuthorService, AuthorService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICourseService, CourseService>();
         }
     }
