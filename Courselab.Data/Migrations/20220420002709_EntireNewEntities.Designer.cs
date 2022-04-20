@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Courselab.Data.Migrations
 {
     [DbContext(typeof(CourselabDbContext))]
-    [Migration("20220419232759_EntireNewEntities")]
+    [Migration("20220420002709_EntireNewEntities")]
     partial class EntireNewEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

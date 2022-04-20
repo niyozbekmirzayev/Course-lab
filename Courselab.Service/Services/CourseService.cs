@@ -23,8 +23,8 @@ namespace Courselab.Service.Services
         private readonly IMapper mapper;
         private readonly IWebHostEnvironment env;
         private readonly IConfiguration config;
-        private readonly string imageSection = "ImagesUrl:Images";
-        private readonly string videoSection = "VideosUrl:Videos";
+        private readonly string imageSection = "Storage:ImagesUrl";
+        private readonly string videoSection = "Storage:VideosUrl";
 
         public CourseService(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment env, IConfiguration config)
         {

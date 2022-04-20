@@ -25,7 +25,7 @@ namespace Courselab.Service.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly IWebHostEnvironment env;
-        private readonly string imageSection = "ImagesUrl:Images";
+        private readonly string imageSection = "Storage:ImagesUrl";
 
         public UserService(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration config, IWebHostEnvironment env)
         {

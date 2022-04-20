@@ -19,7 +19,7 @@ namespace Courselab.Data.Migrations
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     Gender = table.Column<int>(type: "integer", nullable: false),
-                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     About = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Image = table.Column<string>(type: "text", nullable: true),
