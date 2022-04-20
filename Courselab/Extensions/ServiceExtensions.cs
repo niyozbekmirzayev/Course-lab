@@ -1,4 +1,5 @@
-﻿using Courselab.Service.Interfaces;
+﻿using Courselab.Service.Auth;
+using Courselab.Service.Interfaces;
 using Courselab.Service.Services;
 using EduCenterWebAPI.Data.IRepositories;
 using EduCenterWebAPI.Data.Respositories;
@@ -13,6 +14,7 @@ namespace Courselab.API.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<IAuthService, AuthService>();
         }
     }
 }
