@@ -3,6 +3,7 @@ using Courselab.Domain.Configurations;
 using Courselab.Domain.Entities.Courses;
 using Courselab.Service.DTOs.Courses;
 using Courselab.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Courselab.API.Controllers
 
         public CoursesController(ICourseService courseService) => this.courseService = courseService;
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<BaseResponse<Course>>> Create([FromForm] CourseForCreationDto courseCreationalDto)
         {
             var result = await courseService.CreateAsync(courseCreationalDto);
@@ -66,7 +67,7 @@ namespace Courselab.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<BaseResponse<Course>>> Delete(Guid id)
         {
             var result = await courseService.DeleteAsync(id);
@@ -82,7 +83,7 @@ namespace Courselab.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut, Authorize]
         public async Task<ActionResult<BaseResponse<Course>>> Update([FromForm] CourseForUpdateDto courseForUpdate)
         {
             var result = await courseService.UpdateAsync(courseForUpdate);

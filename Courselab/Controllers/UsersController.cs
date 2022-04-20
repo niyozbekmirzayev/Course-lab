@@ -4,6 +4,7 @@ using Courselab.Domain.Entities.Users;
 using Courselab.Service.DTOs.Commons;
 using Courselab.Service.DTOs.Users;
 using Courselab.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -69,7 +70,7 @@ namespace Courselab.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<ActionResult<BaseResponse<User>>> Delete(Guid id)
         {
             var result = await userService.DeleteAsync(id);
@@ -85,7 +86,7 @@ namespace Courselab.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
+        [HttpPut, Authorize]
         public async Task<ActionResult<BaseResponse<User>>> Update([FromForm] UserForUpdateDto userForUpdate)
         {
             var result = await userService.UpdateAsync(userForUpdate);
@@ -101,7 +102,7 @@ namespace Courselab.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("[action]/{id}&{courseId}")]
+        [HttpPost("[action]/{id}&{courseId}"), Authorize]
         public async Task<ActionResult<BaseResponse<User>>> RegisterCourse(Guid id, Guid courseId)
         {
             var result = await userService.BuyCourseAsync(id, courseId);
@@ -117,7 +118,7 @@ namespace Courselab.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("[action]")]
+        [HttpPost("[action]"), Authorize]
         public async Task<ActionResult<BaseResponse<User>>> SetImage([FromForm] SetImageDto setImageDto)
         {
             var result = await userService.SetImageAsync(setImageDto);
