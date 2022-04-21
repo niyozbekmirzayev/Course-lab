@@ -1,5 +1,4 @@
-﻿using Courselab.Service.Auth;
-using Courselab.Service.Interfaces;
+﻿using Courselab.Service.Interfaces;
 using Courselab.Service.Services;
 using EduCenterWebAPI.Data.IRepositories;
 using EduCenterWebAPI.Data.Respositories;

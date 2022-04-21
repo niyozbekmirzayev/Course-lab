@@ -28,7 +28,7 @@ namespace Courselab.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //authentifaction 
+            // Authentifaction 
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -39,7 +39,7 @@ namespace Courselab.API
                 o.SaveToken = true;
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
+                    ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
@@ -50,17 +50,40 @@ namespace Courselab.API
 
             services.AddControllers();
 
-            //registring connection string
-            services.AddDbContext<CourselabDbContext>(
-               options => options.UseNpgsql(Configuration.GetConnectionString("CourselabConnectionString"))
-               );
+            // Registring connection string
+            services.AddDbContext<CourselabDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("CourselabConnectionString")));
+
+         
 
             services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Courselab", Version = "v1" });
-            });
+             {
+                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Courselab", Version = "v1" });
+                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                 {
+                     In = ParameterLocation.Header,
+                     Description = "Please enter token",
+                     Name = "Authorization",
+                     Type = SecuritySchemeType.Http,
+                     BearerFormat = "JWT",
+                     Scheme = "bearer"
+                 });
+                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
+             });
 
-            //using extension method to register all services
+            // Using extension method to register all services
             services.AddCustomService();
 
             services.AddControllers().AddNewtonsoftJson();
@@ -70,7 +93,7 @@ namespace Courselab.API
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
 
-            //reginstring to use mapper
+            // Reginstring to use mapper
             services.AddAutoMapper(typeof(MappingConfigure));
 
             services.AddHttpContextAccessor();

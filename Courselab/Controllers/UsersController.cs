@@ -17,10 +17,7 @@ namespace Courselab.API.Controllers
     public class UsersController : Controller
     {
         private IUserService userService;
-        public UsersController(IUserService userService)
-        {
-            this.userService = userService;
-        }
+        public UsersController(IUserService userService) => this.userService = userService;
 
         [HttpPost]
         public async Task<ActionResult<BaseResponse<User>>> Create([FromForm] UserForCreationDto userCreationalDto)
@@ -39,6 +36,7 @@ namespace Courselab.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult<BaseResponse<IEnumerable<User>>> GetAll([FromQuery] PaginationParams @params)
         {
             var result = userService.GetAll(@params);
@@ -70,7 +68,8 @@ namespace Courselab.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{id}"), Authorize]
+        [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<BaseResponse<User>>> Delete(Guid id)
         {
             var result = await userService.DeleteAsync(id);
@@ -86,7 +85,8 @@ namespace Courselab.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut, Authorize]
+        [HttpPut]
+        [Authorize]
         public async Task<ActionResult<BaseResponse<User>>> Update([FromForm] UserForUpdateDto userForUpdate)
         {
             var result = await userService.UpdateAsync(userForUpdate);
@@ -102,7 +102,8 @@ namespace Courselab.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("[action]/{id}&{courseId}"), Authorize]
+        [HttpPost("[action]/{id}&{courseId}")]
+        [Authorize]
         public async Task<ActionResult<BaseResponse<User>>> RegisterCourse(Guid id, Guid courseId)
         {
             var result = await userService.BuyCourseAsync(id, courseId);
@@ -118,7 +119,8 @@ namespace Courselab.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("[action]"), Authorize]
+        [HttpPost("[action]")]
+        [Authorize]
         public async Task<ActionResult<BaseResponse<User>>> SetImage([FromForm] SetImageDto setImageDto)
         {
             var result = await userService.SetImageAsync(setImageDto);

@@ -1,6 +1,6 @@
 ﻿using Courselab.Domain.Entities.Users;
 
-namespace Courselab.Service.Auth
+namespace Courselab.Service.Services
 {
     public interface IAuthService
     {
