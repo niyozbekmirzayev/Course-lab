@@ -40,11 +40,11 @@ namespace Courselab.Service.Services
 
             var fileHelper = new FileHelper(config, env);
 
-            var exsitAuthor = await unitOfWork.Users.GetAsync(author => author.Id.Equals(courseCreationDto.AuthorId) &&
+            var exsistAuthor = await unitOfWork.Users.GetAsync(author => author.Id.Equals(courseCreationDto.AuthorId) &&
                                                                author.Status != ObjectStatus.Deleted);
 
             // Checking if user exsists
-            if (exsitAuthor == null)
+            if (exsistAuthor == null)
             {
                 response.Error = new BaseError(code: 404, message: "Author not found");
 
